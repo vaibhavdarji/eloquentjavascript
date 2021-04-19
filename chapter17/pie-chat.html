@@ -1,0 +1,65 @@
+<!--
+    Write a program that draws the following shapes on a canvas:
+
+A trapezoid (a rectangle that is wider on one side)
+
+A red diamond (a rectangle rotated 45 degrees or ¼π radians)
+
+A zigzagging line
+
+A spiral made up of 100 straight line segments
+
+A yellow star
+When drawing the last two, you may want to refer to the explanation of Math.cos and Math.sin in Chapter 14, which describes how to get coordinates on a circle using these functions.
+
+I recommend creating a function for each shape. Pass the position, and optionally other properties such as the size or the number of points, as parameters. The alternative, which is to hard-code numbers all over your code, tends to make the code needlessly hard to read and modify.
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Drawing the Pie Chart on Canvas</title>
+    </head>
+    <body>
+        <canvas width="600" height="300"></canvas>
+        <script src="https://eloquentjavascript.net/code/chapter/16_game.js"></script>
+        <script src="https://eloquentjavascript.net/code/levels.js"></script>
+        <script src="https://eloquentjavascript.net/code/chapter/17_canvas.js"></script>
+
+        <script>
+            let cx = document.querySelector("canvas").getContext("2d");
+
+            let total = results.reduce((sum, choice) => sum + choice.count, 0);
+
+            let currentAngle = -0.5 * Math.PI;
+            let centerX = 300;
+            let centerY = 150;
+            console.log(results)
+            for (let result of results) {
+                let sliceAngle = (result.count / total) * 2 * Math.PI;
+                cx.beginPath();
+
+                cx.arc(centerX, centerY, 100, currentAngle, currentAngle + sliceAngle);
+
+                let middleAngle = currentAngle + 0.5 * sliceAngle;
+                let textX = Math.cos(middleAngle) * 120 + centerX;
+                let textY = Math.sin(middleAngle) * 120 + centerY;
+                cx.textBaseLine = "middle";
+                if (Math.cos(middleAngle) > 0) {
+                    cx.textAlign = "left";
+                }
+                else {
+                    cx.textAlign = "right";
+                }
+                cx.font = "15px sans-serif";
+                cx.fillStyle = "black";
+                cx.fillText(result.name, textX, textY);
+
+                currentAngle += sliceAngle;
+                cx.lineTo(centerX, centerY);
+                cx.fillStyle = result.color;
+                cx.fill();
+            }
+        </script>
+    </body>
+</html>
