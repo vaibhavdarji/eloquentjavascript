@@ -1,0 +1,91 @@
+<!--
+    Tabbed panels are widely used in user interfaces. They allow you to select an interface panel by choosing from a number of tabs “sticking out” above an element.
+
+In this exercise you must implement a simple tabbed interface. Write a function, asTabs, that takes a DOM node and creates a tabbed interface showing the child elements of that node. It should insert a list of <button> elements at the top of the node, one for each child element, containing text retrieved from the data-tabname attribute of the child. All but one of the original children should be hidden (given a display style of none). The currently visible node can be selected by clicking the buttons.
+
+When that works, extend it to style the button for the currently selected tab differently so that it is obvious which tab is selected.
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tabs</title>
+        <style>
+          tab-panel > button.selected{
+              background: #1976d2;
+              color: #FFFFFF;
+          }
+      
+          tab-panel > div[data-tabname].hidden {
+              display: none;
+          }
+      </style>
+      
+    </head>
+    <body>
+      <tab-panel>
+        <div data-tabname="one">Tab one</div>
+        <div data-tabname="two">Tab two</div>
+        <div data-tabname="three">Tab three</div>
+      </tab-panel>
+      <script>
+        // Keeps track of the currently selected tab.
+        let activeTab;
+        // Keeps track of the current body of tab to be displayed.
+        let currentBody;
+
+        const switchTab = event => {
+         /*
+           * Switches the `activeTab` binding to the newly selected tab, and
+           * removes the `selected` class from the previously selected tab while
+           * adding it to the newly switched `activeTab`.
+         */
+            activeTab.classList.remove("selected");
+            activeTab = event.target;
+            activeTab.classList.add("selected");
+
+            let tabContent = document.querySelectorAll("div");
+            // Hides the content of the previously selected tab.
+            currentBody.classList.toggle("hidden");
+
+            // Manages display of the contents of the multiple tabbed sections.
+            switch(activeTab.textContent) {      
+                case "one":
+                    currentBody = tabContent[0];
+                    break;
+                case "two":
+                    currentBody = tabContent[1];
+                    break;
+                case "three":
+                    currentBody = tabContent[2];
+                    break;
+            }
+
+            // Displays the content of the currently selected tab.
+            currentBody.classList.toggle("hidden");
+        }
+          const asTabs = node => {
+            let tabLength = node.children.length;
+
+            for (let i = 0; i < tabLength; i++) {
+                let tabButton = document.createElement("button");
+          
+                tabButton.textContent = document.querySelectorAll("div")[i].getAttribute("data-tabname");
+                // By default, hide the body of the tabs.
+                node.querySelectorAll("div")[i].classList.add("hidden");
+                tabButton.addEventListener("click", switchTab);
+                node.insertBefore(tabButton, document.querySelector("div"));
+            }
+
+            // Sets the initially selected tab & display its associated content.
+            activeTab = document.querySelector("button");
+            activeTab.classList.add("selected");
+
+            currentBody = document.querySelector("div");
+            currentBody.classList.toggle("hidden");
+          };
+
+        asTabs(document.querySelector("tab-panel"));
+      </script>
+    </body>
+</html>
